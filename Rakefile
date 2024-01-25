@@ -17,10 +17,12 @@ Rake::ExtensionTask.new("c2pa_rb") do |ext|
   ext.lib_dir = "lib/c2pa_rb"
   ext.source_pattern = SOURCE_PATTERN
   ext.cross_compile = true
-  ext.cross_platform = %w[x86-mingw32 x64-mingw-ucrt x64-mingw32 x86-linux x86_64-linux x86_64-darwin arm64-darwin aarch64-linux]
+  ext.cross_platform = %w[x86-mingw32 x64-mingw-ucrt x64-mingw32 x86-linux x86_64-linux x86_64-darwin arm64-darwin
+                          aarch64-linux]
   ext.config_script = ENV["ALTERNATE_CONFIG_SCRIPT"] || "extconf.rb"
 end
 
+desc "Compiles the Rust extension"
 task :build do
   require "bundler"
 
@@ -35,7 +37,7 @@ task :build do
 
   FileUtils.cp("c2pa_rb.gemspec", "pkg/c2pa_rb")
 
-  full_path = File.expand_path("./../../../crates/rb-sys", __FILE__)
+  full_path = File.expand_path("./../../../crates/rb-sys", __dir__)
   cargo_toml_path = "pkg/c2pa_rb/ext/c2pa_rb/Cargo.toml"
   new_contents = File.read(cargo_toml_path).gsub("./../../../../crates/rb-sys", full_path)
   FileUtils.rm(cargo_toml_path)
@@ -46,4 +48,4 @@ task :build do
   end
 end
 
-task default: %i[compile spec rubocop ]
+task default: %i[compile spec rubocop]
